@@ -6,3 +6,6 @@
 
 # The directory Mix downloads your dependencies sources to.
 /deps/
+
+# the directory screenshots will go to
+/screenshots/

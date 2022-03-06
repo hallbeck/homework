@@ -1,89 +1,102 @@
+Code.require_file("lib/common_helpers.exs")
+
 defmodule Homework.HomeworkFormAuthenticationTest do
   # Import helpers
   use Hound.Helpers
   use ExUnit.Case
+  import CommonHelpers
 
   # Start hound session and destroy when tests are run
   hound_session()
-  def goto_form_authentication() do
-    #First I get to the status Code page.
-    navigate_to "https://the-internet.herokuapp.com"
-    #click on Form Authentication
-    click(find_element(:link_text, "Form Authentication"))
+
+  def fill_username_field(user) do
+    fill_field(find_element(:id, "username"), user)
+  end
+
+  def fill_password_field(pass) do
+    fill_field(find_element(:id, "password"), pass)
+  end
+
+  def press_login() do
+    submit_element(find_element(:id, "login"))
   end
 
   @username :tomsmith
-  @password :"SuperSecretPassword!"
-  @badusername :lalalah
-  @badpassword :"lolipop"
+  @password :SuperSecretPassword!
 
-#Testing Form Authentication
+  #Testing Form Authentication
   test "Form Authentication happy path" do
     IO.puts("\nBeginning Form Authentication - Login valid")
-    goto_form_authentication()
-    fill_field(find_element(:id, "username"), @username)
-    fill_field(find_element(:id, "password"), @password)
-    submit_element(find_element(:id, "login"))
-    assert String.contains?(visible_text(find_element(:id, "flash")), "You logged into a secure area!")
+    goto_page("Form Authentication")
+    fill_username_field(@username)
+    fill_password_field(@password)
+    press_login()
+    actual = visible_text(find_element(:id, "flash"))
+    assert_string_contains(actual,"You logged into a secure area!")
     IO.puts("Form Authentication - Login valid: PASS")
     find_element(:link_text, "Logout")|> click
-    assert String.contains?(visible_text(find_element(:id, "flash")), "You logged out of the secure area!")
+    actual = visible_text(find_element(:id, "flash"))
+    assert_string_contains(actual,"You logged out of the secure area!")
     IO.puts("Form Authentication - Logout: PASS")
   rescue
-    error -> take_screenshot("./screenshotFormAuthenticationValid#{DateTime.utc_now()}.png")
+    error -> take_screenshot("./screenshots/screenshot_form_authentication_happy_path#{DateTime.utc_now()}.png")
              raise error
   end
 
   test "Form Authentication invalid username" do
     IO.puts("\nBeginning Form Authentication  - Login failed bad username")
-    goto_form_authentication()
-    fill_field(find_element(:id, "username"), @badusername)
-    fill_field(find_element(:id, "password"), @password)
-    submit_element(find_element(:id, "login"))
-    assert String.contains?(visible_text(find_element(:id, "flash")), "Your username is invalid!")
+    goto_page("Form Authentication")
+    fill_username_field("lalalah")
+    fill_password_field(@password)
+    press_login()
+    actual = visible_text(find_element(:id, "flash"))
+    assert_string_contains(actual,"Your username is invalid!")
     IO.puts("Form Authentication - Login failed bad username: PASS")
   rescue
-    error -> take_screenshot("./screenshotFormAuthenticationValid#{DateTime.utc_now()}.png")
+    error -> take_screenshot("./screenshots/screenshot_form_authentication_invalid_username#{DateTime.utc_now()}.png")
              raise error
   end
 
   test "Form Authentication invalid password" do
     IO.puts("\nBeginning Form Authentication - Login failed bad password")
-    goto_form_authentication()
-    fill_field(find_element(:id, "username"), @username)
-    fill_field(find_element(:id, "password"), @badpassword)
-    submit_element(find_element(:id, "login"))
-    assert String.contains?(visible_text(find_element(:id, "flash")), "Your password is invalid!")
+    goto_page("Form Authentication")
+    fill_username_field(@username)
+    fill_password_field("lolipop")
+    press_login()
+    actual = visible_text(find_element(:id, "flash"))
+    assert_string_contains(actual,"Your password is invalid!")
     IO.puts("Form Authentication - Login failed bad password: PASS")
   rescue
-    error -> take_screenshot("./screenshotFormAuthenticationValid#{DateTime.utc_now()}.png")
+    error -> take_screenshot("./screenshots/screenshot_form_authentication_invalid_password#{DateTime.utc_now()}.png")
              raise error
   end
 
 test "Form Authentication empty username" do
   IO.puts("\nBeginning Form Authentication - Login failed empty username")
-  goto_form_authentication()
-  fill_field(find_element(:id, "username"), "")
-  fill_field(find_element(:id, "password"), @badpassword)
-  submit_element(find_element(:id, "login"))
-  assert String.contains?(visible_text(find_element(:id, "flash")), "Your username is invalid!")
+  goto_page("Form Authentication")
+  fill_username_field("")
+  fill_password_field(@password)
+  press_login()
+  actual = visible_text(find_element(:id, "flash"))
+  assert_string_contains(actual,"Your username is invalid!")
   IO.puts("Form Authentication - Login failed empty username: PASS")
 rescue
-  error -> take_screenshot("./screenshotFormAuthenticationValid#{DateTime.utc_now()}.png")
-           raise error
+    error -> take_screenshot("./screenshots/screenshot_form_authentication_empty_username#{DateTime.utc_now()}.png")
+             raise error
 end
 
 test "Form Authentication empty password" do
   IO.puts("\nBeginning Form Authentication - Login failed empty password")
-  goto_form_authentication()
-  fill_field(find_element(:id, "username"), @username)
-  fill_field(find_element(:id, "password"), "")
-  submit_element(find_element(:id, "login"))
-  assert String.contains?(visible_text(find_element(:id, "flash")), "Your password is invalid!")
+  goto_page("Form Authentication")
+  fill_username_field(@username)
+  fill_password_field("")
+  press_login()
+  actual = visible_text(find_element(:id, "flash"))
+  assert_string_contains(actual,"Your password is invalid!")
   IO.puts("Form Authentication - Login failed empty password: PASS")
 rescue
-  error -> take_screenshot("./screenshotFormAuthenticationValid#{DateTime.utc_now()}.png")
-           raise error
+    error -> take_screenshot("./screenshots/screenshot_form_authentication_empty_password#{DateTime.utc_now()}.png")
+             raise error
 end
 
 end
