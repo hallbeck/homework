@@ -4,7 +4,7 @@ defmodule ApiTest do
   test "get single user test" do
     IO.puts("get single user test")
     resp = HTTPoison.get!("https://reqres.in/api/users/5")
-  assert resp.status_code == 200
+    assert resp.status_code == 200
     user_data =JSON.decode!("#{resp.body}")
     comparison = %{
       "avatar" => "https://reqres.in/img/faces/5-image.jpg",
@@ -14,6 +14,12 @@ defmodule ApiTest do
       "last_name" => "Morris"
     }
     assert user_data["data"] == comparison
+  end
+
+  test "get invalid URL" do
+    IO.puts("get single user test bad request")
+    resp = HTTPoison.get!("https://reqres.in/api")
+    assert resp.status_code == 404
   end
 
   test "get list users test" do
