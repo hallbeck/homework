@@ -33,10 +33,12 @@ defmodule Homework.HomeworkFormAuthenticationTest do
     press_login()
     actual = visible_text(find_element(:id, "flash"))
     assert_string_contains(actual,"You logged into a secure area!")
+    #here i would check if the secure cookie was set cookies(). the page doesn't set cookies so I cant check it.
     IO.puts("Form Authentication - Login valid: PASS")
     find_element(:link_text, "Logout")|> click
     actual = visible_text(find_element(:id, "flash"))
     assert_string_contains(actual,"You logged out of the secure area!")
+    #here i would check if the secure cookie was NOT set. the page doesn't set cookies so I cant check it.
     IO.puts("Form Authentication - Logout: PASS")
   rescue
     error -> take_screenshot("./screenshots/screenshot_form_authentication_happy_path#{DateTime.utc_now()}.png")

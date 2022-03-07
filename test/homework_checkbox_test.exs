@@ -10,7 +10,7 @@ defmodule Homework.HomeworkCheckboxTest do
   hound_session()
 
 #Testing checkboxes
-  test "checkboxes 1" do
+  test "Selecting checkbox 1" do
     #First I get to the checkboxes page.
     goto_page("Checkboxes")
     # click the first checkbox
@@ -32,7 +32,7 @@ defmodule Homework.HomeworkCheckboxTest do
              raise error
   end
 
-  test "checkboxes 2" do
+  test "Selecting checkbox 2" do
     #First I get to the checkboxes page.
     goto_page("Checkboxes")
     #click the second checkbox

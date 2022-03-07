@@ -22,6 +22,12 @@ defmodule ApiTest do
     assert resp.status_code == 404
   end
 
+  test "get alpha user" do
+    IO.puts("get single user test alpha request")
+    resp = HTTPoison.get!("https://reqres.in/api/users/George")
+    assert resp.status_code == 404
+  end
+
   test "get list users test" do
     IO.puts("get list users test")
     resp = HTTPoison.get!("https://reqres.in/api/users?page=1")
